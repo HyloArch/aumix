@@ -1,0 +1,196 @@
+:root {
+  --white: #fff;
+  --primary-light: #aaa;
+  --background-dark: #322d2a;
+  --background-dark-transparent: #322d2a99;
+  --background-medium-dark: #403a35;
+  --background-medium: #514b49;
+  --background-medium-light: #58514f;
+  --background-light: #686461;
+
+  --green-status: #50d72e;
+  --blue-status: #2e64d7;
+  --red-status: #d72e2e;
+}
+
+html, body {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  padding: 0;
+  margin: 0;
+  background-color: var(--background-dark);
+}
+
+input[type="range"].vertical-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  appearance: slider-vertical;
+  height: 100px;
+}
+
+input[type="text"],
+input[type="number"] {
+  background-color: var(--background-dark);
+  color: var(--white);
+  font-size: 1.25rem;
+}
+
+input[type="text"] {
+  width: 10rem;
+}
+input[type="number"] {
+  width: 6rem;
+}
+
+button {
+  font-size: 1.25rem;
+  background-color: var(--background-light);
+  color: var(--white);
+  padding: 0.25rem 1.5rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  background-color: var(--background-medium-dark);
+}
+
+header > * {
+  height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header .title {
+  width: 14rem;
+  font-size: 2rem;
+  color: var(--white);
+  background-color: var(--background-medium-light);
+}
+
+header .tab {
+  width: 10rem;
+  font-size: 1.5rem;
+  color: var(--primary-light);
+}
+
+header .tab.selected {
+  background-color: var(--background-light);
+  color: var(--white)
+}
+
+header #network-icon {
+  width: 4rem;
+  margin-left: auto;
+}
+
+header #network-icon svg {
+  height: 3rem;
+}
+
+.status {
+  color: var(--red-status);
+  font-weight: 600;
+}
+
+.status.found {
+  color: var(--blue-status);
+}
+
+.status.connected {
+  color: var(--green-status);
+}
+
+.page {
+  flex: 1;
+  color: var(--white);
+}
+
+.scene-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.scene-container .scene-actions {
+  flex: 1;
+  background-color: var(--background-medium);
+}
+
+.scene-container .scene-list {
+  flex: 4;
+  background-color: var(--background-dark);
+}
+
+#add-scene-popover {
+  width: 40%;
+  height: 40%;
+}
+
+.popup:not([hidden]) {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  background-color: var(--background-dark-transparent);
+  color: var(--white);
+}
+
+.popup-container {
+  background-color: var(--background-medium-dark);
+  width: 40%;
+  height: 40%;
+}
+
+#connectionModal .popup-container {
+  width: fit-content;
+  height: fit-content;
+}
+
+#connectionModal .popup-header {
+  display: flex;
+  justify-content: center;
+  font-size: 1.5rem;
+  background-color: var(--background-medium);
+  padding: 0.5rem;
+}
+
+#connectionModal .popup-content {
+  padding: 0.5rem 1.5rem;
+  font-size: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+#connectionModal .popup-content div {
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#connectionModal .popup-content .info-row :first-child {
+  width: 8rem;
+}
+
+.margin-1 {
+  margin: 1rem;
+}
+
+.justify-center {
+  justify-content: center;
+}
