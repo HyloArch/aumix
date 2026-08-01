@@ -2,6 +2,7 @@ package webserver
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -30,13 +31,13 @@ type Server struct {
 	sockets    []*Socket
 }
 
-func NewServer() *Server {
+func NewServer(ip string, port int) *Server {
 	server := &Server{}
 
 	serveMux := http.NewServeMux()
 
 	httpServer := &http.Server{
-		Addr:    "192.168.9.108:8080",
+		Addr:    fmt.Sprintf("%s:%d", ip, port),
 		Handler: serveMux,
 		BaseContext: func(l net.Listener) context.Context {
 			return context.WithValue(context.Background(), ServerContextKey, server)
@@ -111,4 +112,16 @@ func (s *Server) Shutdown() {
 
 	s.httpServer.Shutdown(ctx)
 	webLogger.Println("Server shutdown")
+}
+
+func GetLocalIP() (net.IP, error) {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		return net.IP{}, err
+	}
+	defer conn.Close()
+
+	localAddress := conn.LocalAddr().(*net.UDPAddr)
+
+	return localAddress.IP, nil
 }

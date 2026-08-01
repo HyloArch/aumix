@@ -34,7 +34,11 @@ func main() {
 	}()
 	defer client.Close()
 
-	server := webserver.NewServer()
+	ip, err := webserver.GetLocalIP()
+	if err != nil {
+		log.Fatalf("Failed to get local IP: %v", err)
+	}
+	server := webserver.NewServer(ip.String(), 8080)
 	defer server.Shutdown()
 	server.InitRoutes()
 
