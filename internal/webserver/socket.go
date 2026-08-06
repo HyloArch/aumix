@@ -53,7 +53,7 @@ func (s *Socket) Send(msg Message) error {
 	defer writer.Close()
 
 	json.NewEncoder(writer).Encode(msg)
-	webLogger.Printf("Sent message: %v", msg)
+	// webLogger.Printf("Sent message: %v", msg)
 	return nil
 }
 
@@ -72,7 +72,7 @@ func (s *Socket) Listen() error {
 		json.NewDecoder(reader).Decode(&msg)
 		msg.Sender = s
 		s.server.output <- msg
-		webLogger.Printf("Received message: %v\n", msg)
+		// webLogger.Printf("Received message: %v\n", msg)
 	}
 }
 

@@ -3,7 +3,9 @@ package x32
 import (
 	"aumix/internal/osc"
 	"aumix/internal/webserver"
+	"encoding/binary"
 	"fmt"
+	"math"
 	"regexp"
 	"strconv"
 )
@@ -43,12 +45,13 @@ func defaultHandler(manager *Manager, message osc.Message, replyFunc func(webser
 }
 
 func node(manager *Manager, message osc.Message, replyFunc func(webserver.Message) error) {
-	parameterString, ok := message.Parameters[0].(string)
+	parameterString, ok := message.Parameters[0].(osc.StringParam)
 	if !ok {
 		fmt.Println("Node parameter isn't a string")
 		return
 	}
-	address, values := DecodeNode(parameterString)
+	address, values := DecodeNode(string(parameterString))
+	fmt.Println(values...)
 	err := manager.ConfigWrapper.SetByPath(address, values)
 	if err != nil {
 		fmt.Printf("Error setting values from node: %v\n", err)
@@ -59,20 +62,22 @@ func faderOsc(manager *Manager, message osc.Message, replyFunc func(webserver.Me
 	index, err := strconv.Atoi(message.Address[4:6])
 	if err != nil {
 		fmt.Printf("Error get fader index: %v", err)
+		return
 	}
 	value, ok := message.Parameters[0].(osc.FloatParam)
 	if !ok {
 		fmt.Println("Fader parameter is not a float")
+		return
 	}
 	manager.ConfigWrapper.SetFader(index, float32(value))
-}
-
-func fader1Osc(manager *Manager, message osc.Message, replyFunc func(webserver.Message) error) {
-	value := message.Parameters[0]
 	response := webserver.Message{
-		Op:    webserver.MessageOpSET_OSC,
-		Key:   "/ch/01/mix/fader",
-		Value: value,
+		Op:  webserver.MessageOpSET,
+		Key: "mix-fader",
+		Value: map[string]any{
+			"type":  "ch",
+			"index": index,
+			"level": value,
+		},
 	}
 	if replyFunc != nil {
 		replyFunc(response)
@@ -81,11 +86,40 @@ func fader1Osc(manager *Manager, message osc.Message, replyFunc func(webserver.M
 	}
 }
 
+func meters(manager *Manager, message osc.Message, replyFunc func(webserver.Message) error) {
+	index, err := strconv.Atoi(message.Address[8:])
+	if err != nil {
+		fmt.Printf("Error get fader index: %v", err)
+		return
+	}
+	blob, ok := message.Parameters[0].(osc.ByteBlobParam)
+	if !ok {
+		fmt.Println("First value of meters response is not a byte blob")
+		return
+	}
+	length := binary.LittleEndian.Uint32(blob[:4])
+	values := make([]float32, length)
+	for i := range length {
+		bits := binary.LittleEndian.Uint32(blob[(i+1)*4 : (i+2)*4])
+		values[i] = math.Float32frombits(bits)
+	}
+
+	response := webserver.Message{
+		Op:  webserver.MessageOpSET,
+		Key: "meters",
+		Value: map[string]any{
+			"index":  index,
+			"levels": values,
+		},
+	}
+	manager.Webserver.Broadcast(response)
+}
+
 func RegisterOscHandlers(manager *Manager) {
 	manager.SetDefaultOscHandler(defaultHandler)
+	manager.RegisterOscHandler(regexp.MustCompile(`/meters/\d+`), meters)
 	manager.RegisterOscHandler(regexp.MustCompile(`node`), node)
 	manager.RegisterOscHandler(regexp.MustCompile(`stopped`), stopped)
 	manager.RegisterOscHandler(regexp.MustCompile(`/status`), statusOsc)
-	manager.RegisterOscHandler(regexp.MustCompile(`/ch/01/mix/fader`), fader1Osc)
 	manager.RegisterOscHandler(regexp.MustCompile(`/ch/\d+/mix/fader`), faderOsc)
 }

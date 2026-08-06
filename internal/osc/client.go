@@ -59,7 +59,7 @@ func (c *Client) Start(out chan Message, signal chan bool) {
 	<-signal
 	oscLogger.Println("Client started")
 	c.Running = true
-	buffer := make([]byte, 256)
+	buffer := make([]byte, 512)
 	for {
 		n, _, err := c.connection.ReadFromUDP(buffer)
 		if err != nil {
@@ -75,7 +75,7 @@ func (c *Client) Start(out chan Message, signal chan bool) {
 		}
 		message := Decode(buffer[:n])
 		out <- message
-		oscLogger.Printf("Received message: %v\n", message)
+		// oscLogger.Printf("Received message: %v\n", message)
 	}
 }
 
@@ -83,7 +83,7 @@ func (c *Client) Send(msg Message) error {
 	buffer := make([]byte, 256)
 	size := msg.Encode(buffer)
 	_, err := c.connection.Write(buffer[:size])
-	oscLogger.Printf("Sent message: %v\n", msg)
+	// oscLogger.Printf("Sent message: %v\n", msg)
 	return err
 }
 

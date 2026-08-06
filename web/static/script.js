@@ -1,44 +1,32 @@
-const socketInput = document.querySelector("#socket-input")
-const sendButton = document.querySelector("#send")
 const socketResponse = document.querySelector("#socket-response")
-const getInfoButton = document.querySelector("#get-info")
-const getStatusButton = document.querySelector("#get-status")
-const fader1 = document.querySelector("#fader-1")
 
-sendButton.addEventListener("click", e => {
-    if (socket.readyState == socket.OPEN) {
-        const value = socketInput.value
-        socket.send(value)
-    }
-})
+const faderElements = document.querySelectorAll(".fader")
+const faders = Array.from(faderElements).reduce((faders, fader) => ({
+    ...faders,
+    [fader.id]: fader,
+}), {})
 
-getInfoButton.addEventListener("click", e => {
-    if (socket.readyState == socket.OPEN) {
+Object.entries(faders).forEach(([id, fader]) => {
+    const index = parseInt(id.slice(6))
+    fader.addEventListener("input", () => {
         message = {
-            op: "GET_OSC",
-            key: "/info",
-            value: "string value",
+            op: "SET",
+            key: "mix-fader",
+            value: {
+                type: "ch",
+                index,
+                level: faders[`fader-${index}`].value / 1024,
+            },
         }
-
         socket.send(JSON.stringify(message))
-    }
+    })
 })
 
-getStatusButton.addEventListener("click", e => {
-    if (socket.readyState == socket.OPEN) {
-        socket.send("get-status")
-    }
-})
-
-function fader1Changed() {
-    message = {
-        op: "SET_OSC",
-        key: "/ch/01/mix/fader",
-        value: fader1.value / 1024,
-    }
-
-    socket.send(JSON.stringify(message))
-}
+const levelElements = document.querySelectorAll(".level")
+const levels = Array.from(levelElements).reduce((levels, level) => ({
+    ...levels,
+    [level.id]: level,
+}), {})
 
 // =======================
 
@@ -135,16 +123,26 @@ function onSocketOpen(event) {
     refreshAttempts = 0
 }
 
+const faderRegex = /\/ch\/(\d\d)\/mix\/fader/
+
 function onSocketMessage(event) {
-    message = JSON.parse(event.data)
-    if (message.op === "SET_OSC" && message.key === "/ch/01/mix/fader") {
-        fader1.value = message.value * 1024
-    }
-    
+    let message = JSON.parse(event.data)
     if (message.op === "SET") {
-        if (message.key === "mixer-address") {
+        if (message.key === "meters") {
+            if (message.value.index === 0) {
+                for (let i = 1; i <= 8; i++) {
+                    let levelElement = levels[`level-${i}`]
+                    let level = message.value.levels[i - 1]
+                    levelElement.style.setProperty("--level-height", level)
+                }
+            }
+        } else if (message.key === "mixer-address") {
             mixerIpInput.value = message.value.ip
             mixerPortInput.value = message.value.port
+        } else if (message.key === "mix-fader") {
+            if (message.value.type === "ch") {
+                faders[`fader-${message.value.index}`].value = message.value.level * 1024
+            }
         }
     }
 

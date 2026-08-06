@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" sizes="152x152" href="/static/touch-icon-ipad.png">
   <script src="static/script.js?version=10" defer></script>
   <title>AU Mix</title>
-  <link rel="stylesheet" href="static/styles.css?version=4"></style>
+  <link rel="stylesheet" href="static/styles.css?version=5"></style>
 </head>
 <body>
   <div class="content">
@@ -28,23 +28,98 @@
     </header>
 
     <div class="page" id="mixer">
-      <h1>Hello World!</h1>
-
-      <input type="text" id="socket-input">
-      <button id="send">Send</button>
-
       <p id="socket-response"></p>
 
-      <input 
-          class="vertical-slider"
-          id="fader-1" 
-          type="range" 
-          name="fader-1" 
-          min="0" 
-          max="1024" 
-          orient="vertical" 
-          oninput="fader1Changed()" 
-      />
+      <div class="mix-section">
+        <div class="mix-fader">
+          <input 
+            class="fader"
+            id="fader-1" 
+            type="range" 
+            name="fader-1" 
+            min="0" 
+            max="1024" 
+          />
+          <span class="level" id="level-1"></span>
+        </div>
+        <div class="mix-fader">
+          <input 
+            class="fader"
+            id="fader-2" 
+            type="range" 
+            name="fader-2" 
+            min="0" 
+            max="1024" 
+          />
+          <span class="level" id="level-2"></span>
+        </div>
+        <div class="mix-fader">
+          <input 
+            class="fader"
+            id="fader-3" 
+            type="range" 
+            name="fader-3" 
+            min="0" 
+            max="1024" 
+          />
+          <span class="level" id="level-3"></span>
+        </div>
+        <div class="mix-fader">
+          <input 
+            class="fader"
+            id="fader-4" 
+            type="range" 
+            name="fader-4" 
+            min="0" 
+            max="1024" 
+          />
+          <span class="level" id="level-4"></span>
+        </div>
+        <div class="mix-fader">
+          <input 
+            class="fader"
+            id="fader-5" 
+            type="range" 
+            name="fader-5" 
+            min="0" 
+            max="1024" 
+          />
+          <span class="level" id="level-5"></span>
+        </div>
+        <div class="mix-fader">
+          <input 
+            class="fader"
+            id="fader-6" 
+            type="range" 
+            name="fader-6" 
+            min="0" 
+            max="1024" 
+          />
+          <span class="level" id="level-6"></span>
+        </div>
+        <div class="mix-fader">
+          <input 
+            class="fader"
+            id="fader-7" 
+            type="range" 
+            name="fader-7" 
+            min="0" 
+            max="1024" 
+          />
+          <span class="level" id="level-7"></span>
+        </div>
+        <div class="mix-fader">
+          <input 
+            class="fader"
+            id="fader-8" 
+            type="range" 
+            name="fader-8" 
+            min="0" 
+            max="1024" 
+          />
+          <span class="level" id="level-8"></span>
+        </div>
+      </div>
     </div>
 
     <div class="page" id="scenes">
@@ -56,10 +131,6 @@
     </div>
 
     <div class="page" id="performance">
-      <div>
-        <button id="get-info">Get X32 Info</button>
-        <button id="get-status">Get X32 Status</button>
-      </div>
     </div>
   </div>
   

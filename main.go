@@ -8,13 +8,14 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"syscall"
 )
 
 var xremote = osc.Message{Address: "/xremote"}
 
 func main() {
 	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
 	configWrapper, err := state.LoadX32Config("x32state.gob")
 	if err != nil {
@@ -34,11 +35,7 @@ func main() {
 	}()
 	defer client.Close()
 
-	ip, err := webserver.GetLocalIP()
-	if err != nil {
-		log.Fatalf("Failed to get local IP: %v", err)
-	}
-	server := webserver.NewServer(ip.String(), 8080)
+	server := webserver.NewServer(8080)
 	defer server.Shutdown()
 	server.InitRoutes()
 
@@ -49,12 +46,14 @@ func main() {
 	manager.StartServices()
 	manager.Run()
 
-	// client.Send(osc.Message{
-	// 	Address: "/node",
-	// 	Parameters: []osc.Parameter{
-	// 		osc.StringParam("config/mtxlink"),
-	// 	},
-	// })
+	server.Broadcast(webserver.Message{
+		Op:  webserver.MessageOpSET,
+		Key: "meters",
+		Value: map[string]any{
+			"index":  0,
+			"levels": []float32{0.5, 0, 0},
+		},
+	})
 
 	<-sigChan
 }

@@ -178,6 +178,15 @@ func (m *Manager) refreshX32Connection() {
 	if err != nil {
 		log.Printf("Failed to send data: %v\n", err)
 	}
+	err = m.OscClient.Send(osc.Message{
+		Address: "/meters",
+		Parameters: []osc.Parameter{
+			osc.StringParam("/meters/0"),
+		},
+	})
+	if err != nil {
+		log.Printf("Failed to send data: %v\n", err)
+	}
 }
 
 func (m *Manager) IsOSCConnected() bool {

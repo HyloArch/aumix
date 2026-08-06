@@ -7,3 +7,7 @@ type IntParam int32
 type FloatParam float32
 type StringParam string
 type ByteBlobParam []byte
+
+func (b ByteBlobParam) String() string {
+	return "blob"
+}

@@ -3,6 +3,7 @@ package x32
 import (
 	"aumix/internal/osc"
 	"aumix/internal/webserver"
+	"fmt"
 )
 
 func statusWeb(manager *Manager, message webserver.Message) {
@@ -44,7 +45,9 @@ func syncWeb(manager *Manager, message webserver.Message) {
 		sendFunc := message.Sender.Send
 		sendFunc(getStatusMessage(manager))
 		sendFunc(getMixerAddressMessage(manager))
-		requestFaderValue(manager, 1, message.Sender)
+		for i := 1; i <= 32; i++ {
+			requestFaderValue(manager, i, message.Sender)
+		}
 	}
 }
 
@@ -64,9 +67,29 @@ func fader1Web(manager *Manager, message webserver.Message) {
 	}
 }
 
+func mixFader(manager *Manager, message webserver.Message) {
+	switch message.Op {
+	case webserver.MessageOpGET:
+
+	case webserver.MessageOpSET:
+		value := message.Value.(map[string]any)
+		ty := value["type"]
+		index := value["index"].(float64)
+		level := value["level"].(float64)
+		manager.OscClient.Send(osc.Message{
+			Address: fmt.Sprintf("/%s/%02d/mix/fader", ty, int(index)),
+			Parameters: []osc.Parameter{
+				osc.FloatParam(level),
+			},
+		})
+		manager.Webserver.BroadcastExcept(message, message.Sender)
+	}
+}
+
 func RegisterWebHandlers(manager *Manager) {
 	manager.RegisterWebHandler("status", statusWeb)
 	manager.RegisterWebHandler("mixer-address", mixerAddress)
 	manager.RegisterWebHandler("sync", syncWeb)
 	manager.RegisterWebHandler("/ch/01/mix/fader", fader1Web)
+	manager.RegisterWebHandler("mix-fader", mixFader)
 }
