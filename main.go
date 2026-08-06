@@ -46,14 +46,5 @@ func main() {
 	manager.StartServices()
 	manager.Run()
 
-	server.Broadcast(webserver.Message{
-		Op:  webserver.MessageOpSET,
-		Key: "meters",
-		Value: map[string]any{
-			"index":  0,
-			"levels": []float32{0.5, 0, 0},
-		},
-	})
-
 	<-sigChan
 }
