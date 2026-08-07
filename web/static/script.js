@@ -270,7 +270,7 @@ function onSocketClose(event) {
 
 function refreshSocket() {
     console.log("Refreshing socket")
-    if (socket && socket.readyState == socket.OPEN) {
+    if (socket && (socket.readyState == socket.OPEN || socket.readyState == socket.CONNECTING)) {
         return
     }
     clearTimeout(refreshSocketTimeout)
