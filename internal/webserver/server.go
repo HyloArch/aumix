@@ -55,6 +55,8 @@ func (s *Server) InitRoutes() {
 	s.serveMux.HandleFunc("/{$}", index)
 	s.serveMux.HandleFunc("/static/", static)
 	s.serveMux.HandleFunc("/ws", ws)
+	s.serveMux.HandleFunc("/sample/{$}", sample)
+	s.serveMux.HandleFunc("/sample/{name}", deleteSample)
 }
 
 func (s *Server) ListenAndServe(output chan Message) {

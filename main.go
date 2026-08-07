@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aumix/internal/audio"
 	"aumix/internal/osc"
 	"aumix/internal/webserver"
 	"aumix/internal/x32"
@@ -38,6 +39,12 @@ func main() {
 	server := webserver.NewServer(8080)
 	defer server.Shutdown()
 	server.InitRoutes()
+
+	err = audio.InitPlayer(48000)
+	if err != nil {
+		log.Fatalf("Failed to initialize audio player: %v", err)
+	}
+	defer audio.Close()
 
 	manager := x32.NewManager(1, configWrapper, client, server)
 	defer manager.Shutdown()

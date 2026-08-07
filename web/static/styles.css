@@ -256,6 +256,18 @@ header #network-icon svg {
   height: 3rem;
 }
 
+.samples-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sample-line {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
 
 .margin-1 {
   margin: 1rem;

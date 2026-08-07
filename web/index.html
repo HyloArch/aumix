@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" sizes="152x152" href="/static/touch-icon-ipad.png">
   <script src="static/script.js?version=10" defer></script>
   <title>AU Mix</title>
-  <link rel="stylesheet" href="static/styles.css?version=5"></style>
+  <link rel="stylesheet" href="static/styles.css?version=6"></style>
 </head>
 <body>
   <div class="content">
@@ -18,6 +18,7 @@
       <div class="tab" id="mixer">Mixer</div>
       <div class="tab" id="scenes">Scenes</div>
       <div class="tab" id="performance">Performance</div>
+      <div class="tab" id="samples">Samples</div>
       <div class="status" id="network-icon">
         <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 7L1.17157 5.82843C2.98259 4.01741 5.43884 3 8 3C10.5612 3 13.0174 4.01742 14.8284 5.82843L16 7L14.5858 8.41421L13.4142 7.24264C11.9783 5.8067 10.0307 5 8 5C5.96928 5 4.02173 5.8067 2.58579 7.24264L1.41421 8.41421L0 7Z"/>
@@ -131,6 +132,28 @@
     </div>
 
     <div class="page" id="performance">
+    </div>
+
+    <div class="page" id="samples">
+      <div class="samples-container">
+        <div class="sample-line">
+          <label for="sample-dropdown">Choose a sample</label>
+          <select name="sample-dropdown" id="sample-dropdown"></select>
+          <button id="sample-refresh">Refresh Samples</button>
+        </div>
+
+        <div class="sample-line">
+          <button id="sample-play">Play Sample</button>
+          <button id="sample-stop">Stop Sample</button>
+          <button id="sample-delete">Delete Sample</button>
+        </div>
+
+        <div class="sample-line">
+          <label for="sample-file"></label>
+          <input name="sample-file" id="sample-file" type="file" accept=".mp3">
+          <button id="sample-upload">Upload Sample</button>
+        </div>
+      </div>
     </div>
   </div>
   

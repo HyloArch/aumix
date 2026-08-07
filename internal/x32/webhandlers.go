@@ -1,9 +1,11 @@
 package x32
 
 import (
+	"aumix/internal/audio"
 	"aumix/internal/osc"
 	"aumix/internal/webserver"
 	"fmt"
+	"log"
 )
 
 func statusWeb(manager *Manager, message webserver.Message) {
@@ -86,10 +88,34 @@ func mixFader(manager *Manager, message webserver.Message) {
 	}
 }
 
+func samples(manager *Manager, message webserver.Message) {
+	switch message.Op {
+	case webserver.MessageOpGET:
+		sampleFiles, err := audio.GetSamples()
+		if err != nil {
+			log.Printf("Error getting samples: %v\n", err)
+			return
+		}
+		message.Sender.Send(webserver.Message{
+			Op:    webserver.MessageOpSET,
+			Key:   "samples",
+			Value: sampleFiles,
+		})
+	case webserver.MessageOpSET:
+		sample, ok := message.Value.(string)
+		if ok {
+			audio.PlaySample(sample)
+		} else {
+			audio.Pause()
+		}
+	}
+}
+
 func RegisterWebHandlers(manager *Manager) {
 	manager.RegisterWebHandler("status", statusWeb)
 	manager.RegisterWebHandler("mixer-address", mixerAddress)
 	manager.RegisterWebHandler("sync", syncWeb)
 	manager.RegisterWebHandler("/ch/01/mix/fader", fader1Web)
 	manager.RegisterWebHandler("mix-fader", mixFader)
+	manager.RegisterWebHandler("samples", samples)
 }

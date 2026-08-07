@@ -28,6 +28,81 @@ const levels = Array.from(levelElements).reduce((levels, level) => ({
     [level.id]: level,
 }), {})
 
+// Sample test
+
+const sampleDropdown = document.querySelector("#sample-dropdown")
+const playSample = document.querySelector("#sample-play")
+const stopSample = document.querySelector("#sample-stop")
+const deleteSample = document.querySelector("#sample-delete")
+const refreshSample = document.querySelector("#sample-refresh")
+const sampleFile = document.querySelector("#sample-file")
+const uploadSample = document.querySelector("#sample-upload")
+
+refreshSample.addEventListener("click", () => {
+    socket.send(JSON.stringify({
+        op: "GET",
+        key: "samples"
+    }))
+})
+
+playSample.addEventListener("click", () => {
+    socket.send(JSON.stringify({
+        op: "SET",
+        key: "samples",
+        value: sampleDropdown.value
+    }))
+})
+
+stopSample.addEventListener("click", () => {
+    socket.send(JSON.stringify({
+        op: "SET",
+        key: "samples",
+    }))
+})
+
+deleteSample.addEventListener("click", async () => {
+    const response = await fetch(`http://${host}/sample/${sampleDropdown.value}`, {
+        method: "DELETE",
+    })
+
+    if (response.ok) {
+        console.log('Sample deleted');
+        socket.send(JSON.stringify({
+            op: "GET",
+            key: "samples"
+        }))
+    } else {
+        console.error('Server side communication failed:', response.statusText);
+    }
+})
+
+uploadSample.addEventListener("click", async () => {
+    if (sampleFile.files.length === 0) {
+        return
+    }
+
+    const file = sampleFile.files[0]
+
+    const formData = new FormData()
+    formData.append("file", file)
+
+    const response = await fetch(`http://${host}/sample/`, {
+        method: 'POST',
+        body: formData
+    })
+
+    if (response.ok) {
+        console.log('Upload successfully processed');
+        sampleFile.value = ""
+        socket.send(JSON.stringify({
+            op: "GET",
+            key: "samples"
+        }))
+    } else {
+        console.error('Server side communication failed:', response.statusText);
+    }
+})
+
 // =======================
 
 const networkIcon = document.querySelector("#network-icon")
@@ -119,6 +194,10 @@ function onSocketOpen(event) {
         key: "sync"
     }
     socket.send(JSON.stringify(message))
+    socket.send(JSON.stringify({
+        op: "GET",
+        key: "samples"
+    }))
 
     refreshAttempts = 0
 }
@@ -134,6 +213,7 @@ function onSocketMessage(event) {
                     let levelElement = levels[`level-${i}`]
                     let level = message.value.levels[i - 1]
                     levelElement.style.setProperty("--level-height", level)
+                    // 1.03712367006 ^ (20 * log(level))
                 }
             }
         } else if (message.key === "mixer-address") {
@@ -143,6 +223,12 @@ function onSocketMessage(event) {
             if (message.value.type === "ch") {
                 faders[`fader-${message.value.index}`].value = message.value.level * 1024
             }
+        } else if (message.key === "samples") {
+            sampleDropdown.replaceChildren()
+            message.value.forEach(name => {
+                const newOption = new Option(name, name.toLowerCase())
+                sampleDropdown.add(newOption)
+            })
         }
     }
 
@@ -232,5 +318,3 @@ connectButton.addEventListener("click", e => {
     }
     socket.send(JSON.stringify(message))
 })
-
-
