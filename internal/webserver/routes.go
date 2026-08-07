@@ -28,8 +28,6 @@ func sample(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	req.Body = http.MaxBytesReader(w, req.Body, 10<<20)
-
 	file, handler, err := req.FormFile("file")
 	if err != nil {
 		http.Error(w, "Error retrieving the file: "+err.Error(), http.StatusBadRequest)
