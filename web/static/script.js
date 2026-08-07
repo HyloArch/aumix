@@ -226,7 +226,7 @@ function onSocketMessage(event) {
         } else if (message.key === "samples") {
             sampleDropdown.replaceChildren()
             message.value.forEach(name => {
-                const newOption = new Option(name, name.toLowerCase())
+                const newOption = new Option(name, name)
                 sampleDropdown.add(newOption)
             })
         }

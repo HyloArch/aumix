@@ -1,6 +1,7 @@
 package audio
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -8,6 +9,7 @@ import (
 	"github.com/gopxl/beep"
 	"github.com/gopxl/beep/mp3"
 	"github.com/gopxl/beep/speaker"
+	"github.com/gopxl/beep/wav"
 )
 
 func GetSamples() ([]string, error) {
@@ -58,7 +60,21 @@ func PlaySample(file string) error {
 		return err
 	}
 
-	streamer, format, err := mp3.Decode(f)
+	ty := filepath.Ext(file)
+
+	var (
+		streamer beep.StreamSeekCloser
+		format   beep.Format
+	)
+
+	switch ty {
+	case ".mp3":
+		streamer, format, err = mp3.Decode(f)
+	case ".wav":
+		streamer, format, err = wav.Decode(f)
+	default:
+		return fmt.Errorf("File format not supported.")
+	}
 	if err != nil {
 		return err
 	}

@@ -104,7 +104,7 @@ func samples(manager *Manager, message webserver.Message) {
 	case webserver.MessageOpSET:
 		sample, ok := message.Value.(string)
 		if ok {
-			audio.PlaySample(sample)
+			log.Println(audio.PlaySample(sample))
 		} else {
 			audio.Pause()
 		}
