@@ -19,7 +19,7 @@ func GetSamples() ([]string, error) {
 	}
 	sampleFiles := make([]string, 0)
 	for _, file := range dir {
-		if !file.IsDir() && filepath.Ext(file.Name()) == ".mp3" {
+		if !file.IsDir() {
 			sampleFiles = append(sampleFiles, file.Name())
 		}
 	}
