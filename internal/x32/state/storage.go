@@ -22,6 +22,11 @@ type ConfigWrapper struct {
 }
 
 func (c *ConfigWrapper) Save(filePath string) error {
+	err := os.MkdirAll("data", 0755)
+	if err != nil {
+		return err
+	}
+
 	file, err := os.Create(filePath)
 	if err != nil {
 		return err

@@ -1,0 +1,25 @@
+.fader {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  appearance: slider-vertical;
+  -webkit-appearance: slider-vertical;
+  /* transform: rotate(-90deg);
+  transform-origin: left top;
+  top: 100px;
+  width: 100px; */
+  position: relative;
+  background: var(--black);
+  appearance: none;
+  height: 400px;
+  width: 12px;
+  margin: 0 16px;
+}
+
+.fader::-webkit-slider-thumb {
+  appearance: none;
+  background: #555;
+  border-radius: 0;
+  width: 32px;
+  height: 48px;
+  /* left: -16px; */
+}

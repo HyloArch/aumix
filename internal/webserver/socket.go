@@ -20,7 +20,9 @@ type Socket struct {
 func NewSocket(w http.ResponseWriter, req *http.Request) (*Socket, error) {
 	socket := &Socket{}
 
-	conn, err := websocket.Accept(w, req, &websocket.AcceptOptions{})
+	conn, err := websocket.Accept(w, req, &websocket.AcceptOptions{
+		OriginPatterns: []string{"localhost:5173"},
+	})
 	if err != nil {
 		return socket, err
 	}

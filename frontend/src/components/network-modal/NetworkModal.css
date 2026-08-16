@@ -1,0 +1,53 @@
+.network-modal:not([hidden]) {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  background-color: var(--background-dark-transparent);
+  color: var(--white);
+  z-index: 1;
+}
+
+.popup-container {
+  background-color: var(--background-medium-dark);
+  width: 40%;
+  height: 40%;
+  width: fit-content;
+  height: fit-content;
+}
+
+.network-modal {
+  .popup-header {
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+    background-color: var(--background-medium);
+    padding: 0.5rem;
+  }
+
+  .popup-content {
+    padding: 0.5rem 1.5rem;
+    font-size: 1.25rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .popup-content div {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .popup-content .info-row :first-child {
+    width: 8rem;
+  }
+
+  .connect-button {
+    justify-content: center;
+    margin: 1rem;
+  }
+}

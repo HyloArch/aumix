@@ -1,2 +1,5 @@
 x32state.gob
 /data/*
+sample_aumix.service
+.DS_Store
+node_modules/

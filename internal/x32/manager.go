@@ -178,6 +178,17 @@ func (m *Manager) refreshX32Connection() {
 	if err != nil {
 		log.Printf("Failed to send data: %v\n", err)
 	}
+
+	// m.Webserver.Broadcast(webserver.Message{
+	// 	Op:  webserver.MessageOpSET,
+	// 	Key: "meters",
+	// 	Value: map[string]any{
+	// 		"index":  0,
+	// 		"length": 4,
+	// 		"levels": []byte{0x00, 0x0F, 0xF4, 0x3d, 0x3a, 0x0c, 0xF4, 0x3c, 0x00, 0x0F, 0xF4, 0x3e, 0x00, 0x00, 0x00, 0x3e},
+	// 	},
+	// })
+
 	// err = m.OscClient.Send(osc.Message{
 	// 	Address: "/meters",
 	// 	Parameters: []osc.Parameter{
@@ -187,6 +198,10 @@ func (m *Manager) refreshX32Connection() {
 	// if err != nil {
 	// 	log.Printf("Failed to send data: %v\n", err)
 	// }
+}
+
+func (m *Manager) syncToMixer() {
+	go syncX32(m.OscClient.Send)
 }
 
 func (m *Manager) IsOSCConnected() bool {

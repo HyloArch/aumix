@@ -3,6 +3,7 @@ package webserver
 import (
 	"context"
 	"fmt"
+	"io/fs"
 	"log"
 	"net"
 	"net/http"
@@ -17,10 +18,18 @@ type contextKey struct {
 }
 
 var (
+	fileSystem fs.FS
+	fileServer http.Handler
+
 	ServerContextKey = &contextKey{"web-server"}
 
 	webLogger = log.New(os.Stdout, "web-server", log.Ltime)
 )
+
+func SetFS(serverFS fs.FS) {
+	fileSystem = serverFS
+	fileServer = http.FileServer(http.FS(serverFS))
+}
 
 type Server struct {
 	output chan Message
@@ -52,8 +61,7 @@ func NewServer(port int) *Server {
 }
 
 func (s *Server) InitRoutes() {
-	s.serveMux.HandleFunc("/{$}", index)
-	s.serveMux.HandleFunc("/static/", static)
+	s.serveMux.HandleFunc("/", static)
 	s.serveMux.HandleFunc("/ws", ws)
 	s.serveMux.HandleFunc("/sample/{$}", sample)
 	s.serveMux.HandleFunc("/sample/{name}", deleteSample)
@@ -63,7 +71,7 @@ func (s *Server) ListenAndServe(output chan Message) {
 	webLogger.Println("Server started")
 	s.output = output
 	err := s.httpServer.ListenAndServe()
-	log.Printf("Server stopped: %v\n", err)
+	webLogger.Printf("Server stopped: %v\n", err)
 }
 
 func (s *Server) addSocket(socket *Socket) {

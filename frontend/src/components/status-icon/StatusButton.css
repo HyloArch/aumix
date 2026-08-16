@@ -1,0 +1,11 @@
+.status-button {
+  width: 4rem;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+
+  svg {
+    height: 3rem;
+  }
+}

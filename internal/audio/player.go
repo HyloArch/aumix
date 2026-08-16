@@ -13,7 +13,7 @@ import (
 )
 
 func GetSamples() ([]string, error) {
-	dir, err := os.ReadDir("data")
+	dir, err := os.ReadDir("data/samples")
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func InitPlayer(sampleRate int) error {
 		sampleRate: targetSampleRate,
 	}
 
-	err = os.MkdirAll("data", 0755)
+	err = os.MkdirAll("data/samples", 0755)
 	if err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func InitPlayer(sampleRate int) error {
 func PlaySample(file string) error {
 	Stop()
 
-	f, err := os.Open(filepath.Join("data", file))
+	f, err := os.Open(filepath.Join("data/samples", file))
 	if err != nil {
 		return err
 	}

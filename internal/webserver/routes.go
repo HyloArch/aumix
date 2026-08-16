@@ -1,25 +1,29 @@
 package webserver
 
 import (
-	"errors"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 )
 
-func index(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, "web/index.html")
-}
-
 func static(w http.ResponseWriter, req *http.Request) {
-	path := "web" + req.URL.Path
-	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-		w.WriteHeader(http.StatusNotFound)
+	file, err := fileSystem.Open(req.URL.Path[1:])
+	if err == nil {
+		file.Close()
+		fileServer.ServeHTTP(w, req)
 		return
 	}
 
-	http.ServeFile(w, req, path)
+	indexFile, err := fileSystem.Open("index.html")
+	if err != nil {
+		http.Error(w, "index.html not found", http.StatusNotFound)
+		return
+	}
+	defer indexFile.Close()
+
+	stat, err := indexFile.Stat()
+	http.ServeContent(w, req, "index.html", stat.ModTime(), indexFile.(io.ReadSeeker))
 }
 
 func sample(w http.ResponseWriter, req *http.Request) {
@@ -35,7 +39,7 @@ func sample(w http.ResponseWriter, req *http.Request) {
 	}
 	defer file.Close()
 
-	dst, err := os.Create(filepath.Join("data", handler.Filename))
+	dst, err := os.Create(filepath.Join("data", "samples", handler.Filename))
 	if err != nil {
 		http.Error(w, "Unable to create local file", http.StatusInternalServerError)
 		return
@@ -59,7 +63,7 @@ func deleteSample(w http.ResponseWriter, req *http.Request) {
 
 	fileName := req.PathValue("name")
 
-	err := os.Remove(filepath.Join("data", fileName))
+	err := os.Remove(filepath.Join("data", "samples", fileName))
 	if err != nil {
 		http.Error(w, "Error deleting file", http.StatusInternalServerError)
 		return

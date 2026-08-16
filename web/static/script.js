@@ -107,11 +107,13 @@ uploadSample.addEventListener("click", async () => {
 
 const networkIcon = document.querySelector("#network-icon")
 const socketStatus = document.querySelector("#socket-status")
-socketStatus.textContent = "Connected"
 const mixerStatus = document.querySelector("#mixer-status")
 const mixerIpInput = document.querySelector("#mixer-ip")
 const mixerPortInput = document.querySelector("#mixer-port")
 const connectButton = document.querySelector("#mixer-connect")
+
+socketStatus.textContent = "Disconnected"
+mixerStatus.textContent = "Disconnected"
 
 let awaitCloseConnectionPopup = false
 let refreshSocketTimeout

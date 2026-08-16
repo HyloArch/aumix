@@ -168,11 +168,11 @@ type X32StateConfigRoutingOUT struct {
 	Index [4]int32 `enum:"OutRouting" pairs:"4"`
 }
 type X32StateConfigRouting struct {
-	IN     X32StateConfigRoutingIN
-	AES50A X32StateConfigRoutingAES50A
-	AES50B X32StateConfigRoutingAES50B
-	CARD   X32StateConfigRoutingCARD
-	OUT    X32StateConfigRoutingOUT
+	In     X32StateConfigRoutingIN
+	Aes50a X32StateConfigRoutingAES50A
+	Aes50b X32StateConfigRoutingAES50B
+	Card   X32StateConfigRoutingCARD
+	Out    X32StateConfigRoutingOUT
 }
 type X32StateConfigUserctrlEnc struct {
 	Index [4]string `start:"1"`

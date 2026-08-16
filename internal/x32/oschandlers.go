@@ -5,7 +5,6 @@ import (
 	"aumix/internal/webserver"
 	"encoding/binary"
 	"fmt"
-	"math"
 	"regexp"
 	"strconv"
 )
@@ -20,6 +19,9 @@ func statusOsc(manager *Manager, _ osc.Message, replyFunc func(webserver.Message
 		manager.Webserver.Broadcast(response)
 	} else if replyFunc != nil {
 		replyFunc(response)
+	}
+	if manager.oscConnectStatus < 1 {
+		manager.syncToMixer()
 	}
 	manager.oscConnectStatus = 2
 }
@@ -98,21 +100,16 @@ func meters(manager *Manager, message osc.Message, replyFunc func(webserver.Mess
 		return
 	}
 	length := binary.LittleEndian.Uint32(blob[:4])
-	values := make([]float32, length)
-	for i := range length {
-		bits := binary.LittleEndian.Uint32(blob[(i+1)*4 : (i+2)*4])
-		values[i] = math.Float32frombits(bits)
-	}
 
-	response := webserver.Message{
+	manager.Webserver.Broadcast(webserver.Message{
 		Op:  webserver.MessageOpSET,
 		Key: "meters",
 		Value: map[string]any{
 			"index":  index,
-			"levels": values,
+			"length": length,
+			"levels": blob[4:],
 		},
-	}
-	manager.Webserver.Broadcast(response)
+	})
 }
 
 func RegisterOscHandlers(manager *Manager) {
