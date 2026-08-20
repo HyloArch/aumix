@@ -28,6 +28,20 @@ func main() {
 		log.Printf("Error reading config from file: %v", err)
 		configWrapper = state.NewX32Config()
 	}
+
+	// err = configWrapper.SetByPath("config/auxlink", []any{"OFF", "OFF", "ON", "OFF"})
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+
+	// value, err := configWrapper.GetByPath("config/auxlink")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// log.Println(value)
+
+	// return
+
 	defer configWrapper.Save("data/x32state.gob")
 
 	client := &osc.Client{}

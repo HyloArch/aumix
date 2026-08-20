@@ -4,10 +4,7 @@ go 1.26.3
 
 require github.com/coder/websocket v1.8.15
 
-require (
-	github.com/gopxl/beep v1.4.1
-	golang.org/x/text v0.40.0
-)
+require github.com/gopxl/beep v1.4.1
 
 require (
 	github.com/ebitengine/oto/v3 v3.1.0 // indirect

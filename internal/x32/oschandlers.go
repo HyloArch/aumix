@@ -53,10 +53,9 @@ func node(manager *Manager, message osc.Message, replyFunc func(webserver.Messag
 		return
 	}
 	address, values := DecodeNode(string(parameterString))
-	fmt.Println(values...)
 	err := manager.ConfigWrapper.SetByPath(address, values)
 	if err != nil {
-		fmt.Printf("Error setting values from node: %v\n", err)
+		fmt.Printf("Error setting values {%v} from node: %v\n", values, err)
 	}
 }
 
