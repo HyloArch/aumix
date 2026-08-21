@@ -209,6 +209,8 @@ type X32State struct {
 	F_show   X32StateShow
 	F_libs   X32StateLibs
 	F_prefs  X32StatePrefs
+	F_usb    X32StateUSB
+	F_stat   X32StateStat
 }
 
 type Config struct {

@@ -2,6 +2,7 @@ package x32
 
 import (
 	"aumix/internal/osc"
+	"aumix/internal/x32/state"
 	"fmt"
 	"strconv"
 	"time"
@@ -233,7 +234,70 @@ func syncX32Insert(send func(string)) {
 	send("-insert")
 }
 
-func syncX32(send func(osc.Message) error) {
+func syncX32Show(send func(osc.Message) error, configWrapper *state.ConfigWrapper) {
+	config := configWrapper.Lock()
+	defer configWrapper.Unlock()
+
+	config.State.F_show = state.X32StateShow{}
+
+	send(osc.Message{
+		Address: "/showdump",
+	})
+}
+
+var PREFS_NODES = []string{
+	"-prefs",
+	"-prefs/remote",
+	"-prefs/card",
+	"-prefs/rta",
+	"-prefs/ip",
+	"-prefs/ip/addr",
+	"-prefs/ip/mask",
+	"-prefs/ip/gateway",
+}
+
+func syncX32Prefs(send func(string)) {
+	for _, node := range PREFS_NODES {
+		send(node)
+	}
+	for index := range 16 {
+		send(fmt.Sprintf("-prefs/iQ/%02d", index+1))
+	}
+}
+
+func syncX32Usb(send func(string)) {
+	send("-usb")
+	send("-usb/dir")
+	for index := range 999 {
+		send(fmt.Sprintf("-usb/dir/%03d", index+1))
+	}
+}
+
+var SCREENS = []string{
+	"CHAN",
+	"METER",
+	"ROUTE",
+	"SETUP",
+	"LIB",
+	"FX",
+	"MON",
+	"USB",
+	"SCENE",
+	"ASSIGN",
+}
+
+func syncX32Stat(send func(string)) {
+	send("-stat")
+	send("-stat/screen")
+	for _, screen := range SCREENS {
+		send("-state/screen/" + screen)
+	}
+	send("-stat/solosw")
+	send("-stat/aes50")
+	send("-stat/tape")
+}
+
+func syncX32(send func(osc.Message) error, configWrapper *state.ConfigWrapper) {
 	index := 0
 	throttledSend := func(node string) {
 		if index%10 == 0 {
@@ -255,7 +319,10 @@ func syncX32(send func(osc.Message) error) {
 	syncX32Outputs(throttledSend)
 	syncX32Headamp(throttledSend)
 	syncX32Insert(throttledSend)
-	throttledSend("-show/showfile/cue")
+	syncX32Show(send, configWrapper)
+	syncX32Prefs(throttledSend)
+	// syncX32Usb(throttledSend)
+	syncX32Stat(throttledSend)
 }
 
 func getNodeMessage(node string) osc.Message {

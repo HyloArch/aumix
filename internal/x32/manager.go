@@ -201,7 +201,7 @@ func (m *Manager) refreshX32Connection() {
 }
 
 func (m *Manager) syncToMixer() {
-	go syncX32(m.OscClient.Send)
+	go syncX32(m.OscClient.Send, m.ConfigWrapper)
 }
 
 func (m *Manager) IsOSCConnected() bool {

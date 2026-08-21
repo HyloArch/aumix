@@ -20,7 +20,7 @@ run-frontend:
 .PHONY: build
 build: tidy fmt
 	mkdir -p $(BUILD_DIR)/$(BINARY_NAME)
-	go build -o $(BUILD_DIR)/$(BINARY_NAME)/$(BINARY_NAME)
+	CC=aarch64-unknown-linux-gnu-gcc GOOS=linux GOARCH=arm64 go build -o $(BUILD_DIR)/$(BINARY_NAME)/$(BINARY_NAME)
 	shasum -a 256 $(BUILD_DIR)/$(BINARY_NAME)/$(BINARY_NAME) > $(BUILD_DIR)/$(BINARY_NAME)/signature.txt
 
 .PHONY: run

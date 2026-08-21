@@ -378,7 +378,7 @@ func (e *X32EnumOutRoutingHighType) Set(values ...any) (int, error) {
 	return e.X32Enum.Set(values, X32EnumOutRoutingHigh)
 }
 
-var X32EnumClockrate = e(r("48K"), r("44K1"))
+var X32EnumClockrate = e(r("48k"), r("44k1"))
 
 type X32EnumClockrateType struct{ X32Enum }
 
@@ -480,4 +480,148 @@ type X32EnumInvType struct{ X32Enum }
 
 func (e *X32EnumInvType) Set(values ...any) (int, error) {
 	return e.X32Enum.Set(values, X32EnumInv)
+}
+
+var X32EnumProtocol = e(r("MC"), r("HUI"), r("CC"))
+
+type X32EnumProtocolType struct{ X32Enum }
+
+func (e *X32EnumProtocolType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumProtocol)
+}
+
+var X32EnumPort = e(r("MIDI"), r("CARD"), r("RTA"))
+
+type X32EnumPortType struct{ X32Enum }
+
+func (e *X32EnumPortType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumPort)
+}
+
+var X32EnumIQModel = e(r("none"), r("iQ8"), r("iQ10"), r("iQ12"), r("iQ15"), r("iQ15B"), r("iQ18B"))
+
+type X32EnumIQModelType struct{ X32Enum }
+
+func (e *X32EnumIQModelType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumIQModel)
+}
+
+var X32EnumUFifc = e(r("FW"), r("USB"))
+
+type X32EnumUFifcType struct{ X32Enum }
+
+func (e *X32EnumUFifcType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumUFifc)
+}
+
+var X32EnumUFmode = e(r("32/32"), r("16/16"), r("32/8"), r("8/32"))
+
+type X32EnumUFmodeType struct{ X32Enum }
+
+func (e *X32EnumUFmodeType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumUFmode)
+}
+
+var X32EnumUSBmode = e(r("32/32"), r("16/16"), r("32/8"), r("8/32"), r("8/8"), r("2/2"))
+
+type X32EnumUSBmodeType struct{ X32Enum }
+
+func (e *X32EnumUSBmodeType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumUSBmode)
+}
+
+var X32EnumADATwc = e(r("IN"), r("OUT"))
+
+type X32EnumADATwcType struct{ X32Enum }
+
+func (e *X32EnumADATwcType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumADATwc)
+}
+
+var X32EnumADATsync = e(r("WC"), r("ADAT1"), r("ADAT2"), r("ADAT3"), r("ADAT4"))
+
+type X32EnumADATsyncType struct{ X32Enum }
+
+func (e *X32EnumADATsyncType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumADATsync)
+}
+
+var X32EnumMADImode = e(r("56"), r("64"))
+
+type X32EnumMADImodeType struct{ X32Enum }
+
+func (e *X32EnumMADImodeType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumMADImode)
+}
+
+var X32EnumMADI = e(r("1-32"), r("9-40"), r("17-48"), r("25-56"), r("33-64"))
+
+type X32EnumMADIType struct{ X32Enum }
+
+func (e *X32EnumMADIType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumMADI)
+}
+
+var X32EnumMADIsrc = e(r("OFF"), r("OPT"), r("COAX"), r("BOTH"))
+
+type X32EnumMADIsrcType struct{ X32Enum }
+
+func (e *X32EnumMADIsrcType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumMADIsrc)
+}
+
+var X32EnumRTAVisibility = e(r("OFF"), r("25%"), r("30%"), r("40%"), r("45%"), r("50%"), r("55%"), r("60%"), r("65%"), r("70%"), r("75%"), r("80%"))
+
+type X32EnumRTAVisibilityType struct{ X32Enum }
+
+func (e *X32EnumRTAVisibilityType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumRTAVisibility)
+}
+
+var X32EnumRTASource = e(r("none"), r("monitor"), r("Ch%s", n(0, 1, 32, 2)), r("Aux%s", n(0, 1, 8, 1)), r("FX%s%s", n(1, 1, 4, 1), c(0, 'L', 'R')), r("Bus%s", n(0, 1, 16, 2)), r("Mtx%s", n(0, 1, 6, 1)), r("Main"), r("Mono"))
+
+type X32EnumRTASourceType struct{ X32Enum }
+
+func (e *X32EnumRTASourceType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumRTASource)
+}
+
+var X32EnumStatSelidx = e(r("Ch%s", n(0, 1, 32, 2)), r("Aux%s", n(0, 1, 8, 1)), r("FX%s%s", n(1, 1, 4, 1), c(0, 'L', 'R')), r("Bus%s", n(0, 1, 16, 2)), r("Mtx%s", n(0, 1, 6, 1)), r("Main"), r("Mono"))
+
+type X32EnumStatSelidxType struct{ X32Enum }
+
+func (e *X32EnumStatSelidxType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumStatSelidx)
+}
+
+var X32EnumRTAMode = e(r("BAR"), r("SPEC"))
+
+type X32EnumRTAModeType struct{ X32Enum }
+
+func (e *X32EnumRTAModeType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumRTAMode)
+}
+
+var X32EnumRTAPeakhold = e(r("OFF"), r("%s", n(0, 1, 8, 1)))
+
+type X32EnumRTAPeakholdType struct{ X32Enum }
+
+func (e *X32EnumRTAPeakholdType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumRTAPeakhold)
+}
+
+var X32EnumTapeState = e(r("STOP"), r("PAUSE"), r("PLAY"), r("PAUSE RECORD"), r("RECORD"), r("FF"), r("REW"))
+
+type X32EnumTapeStateType struct{ X32Enum }
+
+func (e *X32EnumTapeStateType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumTapeState)
+}
+
+var X32EnumScreen = e(r("CHAN"), r("METER"), r("ROUTE"), r("SETUP"), r("LIB"), r("FX"), r("MON"), r("USB"), r("SCENE"), r("ASSIGN"))
+
+type X32EnumScreenType struct{ X32Enum }
+
+func (e *X32EnumScreenType) Set(values ...any) (int, error) {
+	return e.X32Enum.Set(values, X32EnumScreen)
 }
