@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import "./Samples.css";
-import { useSocket, useSocketOnMessage } from "../../../hooks/useSocket";
-import type { Message } from "../../../types";
+import { useSocket, useSocketOnMessage } from "../../hooks/useSocket";
+import type { Message } from "../../types";
 
 export default function Samples() {
   const { send } = useSocket();

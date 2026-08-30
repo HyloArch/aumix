@@ -1,4 +1,4 @@
-.network-modal {
+.edit-show-modal {
   .popup-content div {
     height: 2.5rem;
     display: flex;
@@ -6,12 +6,14 @@
     gap: 0.5rem;
   }
 
-  .popup-content .info-row :first-child {
-    width: 8rem;
-  }
-
-  .connect-button {
+  .action-buttons {
+    display: flex;
+    gap: 1rem !important;
     justify-content: center;
     margin: 1rem;
+  }
+
+  .info-row :first-child {
+    width: 4rem;
   }
 }

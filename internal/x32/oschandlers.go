@@ -5,6 +5,7 @@ import (
 	"aumix/internal/webserver"
 	"encoding/binary"
 	"fmt"
+	"log"
 	"regexp"
 	"strconv"
 )
@@ -111,6 +112,35 @@ func meters(manager *Manager, message osc.Message, replyFunc func(webserver.Mess
 	})
 }
 
+func goSceneOsc(manager *Manager, message osc.Message, replyFunc func(webserver.Message) error) {
+	id, ok := message.Parameters[0].(osc.IntParam)
+	log.Println(id)
+	if !ok {
+		return
+	}
+
+	manager.ConfigWrapper.Lock()
+	defer manager.ConfigWrapper.Unlock()
+
+	show, ok := manager.ConfigWrapper.GetCurrentShow()
+	if !ok {
+		return
+	}
+	var sceneId int
+	for _, scene := range show.Scenes {
+		if scene.X32Scene == int(id) {
+			sceneId = scene.Id
+		}
+	}
+	manager.ConfigWrapper.SetCurrentScene(sceneId)
+
+	manager.Webserver.Broadcast(webserver.Message{
+		Op:    webserver.MessageOpSET,
+		Key:   "go-scene",
+		Value: sceneId,
+	})
+}
+
 func RegisterOscHandlers(manager *Manager) {
 	manager.SetDefaultOscHandler(defaultHandler)
 	manager.RegisterOscHandler(regexp.MustCompile(`/meters/\d+`), meters)
@@ -118,4 +148,5 @@ func RegisterOscHandlers(manager *Manager) {
 	manager.RegisterOscHandler(regexp.MustCompile(`stopped`), stopped)
 	manager.RegisterOscHandler(regexp.MustCompile(`/status`), statusOsc)
 	manager.RegisterOscHandler(regexp.MustCompile(`/ch/\d+/mix/fader`), faderOsc)
+	manager.RegisterOscHandler(regexp.MustCompile(`/-action/goscene`), goSceneOsc)
 }

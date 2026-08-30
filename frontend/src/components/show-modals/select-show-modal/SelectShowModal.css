@@ -1,0 +1,23 @@
+.select-show-modal .popup-content {
+  width: 28rem;
+  height: 20rem;
+  display: flex;
+  padding: 0;
+  background-color: var(--background-dark);
+  overflow: scroll;
+
+  div {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .option-row {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--background-medium-dark);
+    padding: 0.5rem 1.5rem;
+    border-top: solid 1px var(--black);
+  }
+}

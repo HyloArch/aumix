@@ -1,5 +1,5 @@
-import { MeterMappings } from "../../../constants";
-import MixerFader from "../../mixer-fader";
+import { MeterMappings } from "../../constants";
+import MixerFader from "../../components/mixer-fader";
 import "./Mixer.css";
 
 export default function Mixer() {

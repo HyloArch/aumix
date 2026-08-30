@@ -88,6 +88,173 @@ func mixFader(manager *Manager, message webserver.Message) {
 	}
 }
 
+func show(manager *Manager, message webserver.Message) {
+	switch message.Op {
+	case webserver.MessageOpGET:
+		manager.ConfigWrapper.Lock()
+		defer manager.ConfigWrapper.Unlock()
+
+		show, _ := manager.ConfigWrapper.GetCurrentShow()
+		message.Sender.Send(webserver.Message{
+			Op:    webserver.MessageOpSET,
+			Key:   "show",
+			Value: show,
+		})
+
+		if show.CurrentScene != -1 {
+			message.Sender.Send(webserver.Message{
+				Op:    webserver.MessageOpSET,
+				Key:   "go-scene",
+				Value: show.CurrentScene,
+			})
+		}
+	case webserver.MessageOpSET:
+		manager.ConfigWrapper.Lock()
+		defer manager.ConfigWrapper.Unlock()
+
+		value := message.Value.(map[string]any)
+		idValue, ok := value["id"].(float64)
+		if ok {
+			id := int(idValue)
+			show, ok := manager.ConfigWrapper.GetCurrentShow()
+			if !ok || show.Id != id {
+				manager.ConfigWrapper.SetCurrentShow(id)
+				show, ok = manager.ConfigWrapper.GetCurrentShow()
+				if !ok {
+					return
+				}
+				show.CurrentScene = -1
+			}
+
+			remove, ok := value["remove"].(bool)
+			if ok && remove {
+				manager.ConfigWrapper.RemoveShow(id)
+				manager.Webserver.Broadcast(webserver.Message{
+					Op:    webserver.MessageOpSET,
+					Key:   "show",
+					Value: nil,
+				})
+				return
+			}
+
+			name, ok := value["name"].(string)
+			if ok {
+				show.Name = name
+			}
+			manager.Webserver.Broadcast(webserver.Message{
+				Op:    webserver.MessageOpSET,
+				Key:   "show",
+				Value: show,
+			})
+		} else {
+			name := value["name"].(string)
+			show := manager.ConfigWrapper.CreateShow(name)
+			manager.Webserver.Broadcast(webserver.Message{
+				Op:    webserver.MessageOpSET,
+				Key:   "show",
+				Value: show,
+			})
+			manager.ConfigWrapper.SetCurrentShow(show.Id)
+		}
+	}
+}
+
+func scene(manager *Manager, message webserver.Message) {
+	switch message.Op {
+	case webserver.MessageOpSET:
+		manager.ConfigWrapper.Lock()
+		defer manager.ConfigWrapper.Unlock()
+
+		value := message.Value.(map[string]any)
+		idValue, ok := value["id"].(float64)
+		if ok {
+			id := int(idValue)
+
+			remove, ok := value["remove"].(bool)
+			if ok && remove {
+				manager.ConfigWrapper.RemoveScene(id)
+				break
+			}
+
+			newIndex, ok := value["newIndex"].(float64)
+			if ok {
+				manager.ConfigWrapper.MoveScene(id, int(newIndex))
+				break
+			}
+
+			scene, _ := manager.ConfigWrapper.GetSceneById(id)
+
+			name, ok := value["name"].(string)
+			if ok {
+				scene.Name = name
+			}
+
+			movement, ok := value["movement"].(float64)
+			if ok {
+				scene.Movement = int(movement)
+			}
+
+			measure, ok := value["measure"].(float64)
+			if ok {
+				scene.Measure = int(measure)
+			}
+
+			sceneId, ok := value["sceneId"].(float64)
+			if ok {
+				scene.X32Scene = int(sceneId)
+			}
+		} else {
+			name := value["name"].(string)
+			movement := int(value["movement"].(float64))
+			measure := int(value["measure"].(float64))
+			sceneId := int(value["sceneId"].(float64))
+			manager.ConfigWrapper.CreateScene(name, movement, measure, sceneId)
+		}
+	default:
+		return
+	}
+
+	show, _ := manager.ConfigWrapper.GetCurrentShow()
+	manager.Webserver.Broadcast(webserver.Message{
+		Op:    webserver.MessageOpSET,
+		Key:   "show",
+		Value: show,
+	})
+}
+
+func showList(manager *Manager, message webserver.Message) {
+	if message.Op == webserver.MessageOpGET {
+		shows := manager.ConfigWrapper.GetShowList()
+		message.Sender.Send(webserver.Message{
+			Op:    webserver.MessageOpSET,
+			Key:   "show-list",
+			Value: shows,
+		})
+	}
+}
+
+func goSceneWeb(manager *Manager, message webserver.Message) {
+	if message.Op == webserver.MessageOpSET {
+		manager.ConfigWrapper.Lock()
+		defer manager.ConfigWrapper.Unlock()
+
+		sceneId := int(message.Value.(float64))
+		scene, _ := manager.ConfigWrapper.GetSceneById(sceneId)
+
+		manager.ConfigWrapper.SetCurrentScene(sceneId)
+		manager.Webserver.Broadcast(webserver.Message{
+			Op:    webserver.MessageOpSET,
+			Key:   "go-scene",
+			Value: sceneId,
+		})
+
+		manager.OscClient.Send(osc.Message{
+			Address:    "/-action/goscene",
+			Parameters: []osc.Parameter{osc.IntParam(scene.X32Scene)},
+		})
+	}
+}
+
 func samples(manager *Manager, message webserver.Message) {
 	switch message.Op {
 	case webserver.MessageOpGET:
@@ -117,5 +284,9 @@ func RegisterWebHandlers(manager *Manager) {
 	manager.RegisterWebHandler("sync", syncWeb)
 	manager.RegisterWebHandler("/ch/01/mix/fader", fader1Web)
 	manager.RegisterWebHandler("mix-fader", mixFader)
+	manager.RegisterWebHandler("show", show)
+	manager.RegisterWebHandler("scene", scene)
+	manager.RegisterWebHandler("show-list", showList)
+	manager.RegisterWebHandler("go-scene", goSceneWeb)
 	manager.RegisterWebHandler("samples", samples)
 }

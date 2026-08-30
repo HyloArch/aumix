@@ -4,12 +4,39 @@ import (
 	"aumix/internal/osc"
 	"encoding/gob"
 	"fmt"
+	"log"
 	"os"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
 )
+
+type ShowScene struct {
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Movement int    `json:"movement"`
+	Measure  int    `json:"measure"`
+	X32Scene int    `json:"sceneId"`
+}
+
+type Show struct {
+	Id           int          `json:"id"`
+	Name         string       `json:"name"`
+	CurrentScene int          `json:"_"`
+	Scenes       []*ShowScene `json:"scenes"`
+}
+
+type Config struct {
+	MixerIp     string
+	MixerPort   int
+	Shows       map[int]*Show
+	CurrentShow int
+	NextShowId  int
+	NextSceneId int
+	State       X32State
+}
 
 type ConfigWrapper struct {
 	Config *Config
@@ -210,7 +237,126 @@ func LoadX32Config(filePath string) (*ConfigWrapper, error) {
 
 func NewX32Config() *ConfigWrapper {
 	configWrapper := &ConfigWrapper{
-		Config: &Config{},
+		Config: &Config{
+			Shows: make(map[int]*Show),
+		},
 	}
 	return configWrapper
+}
+
+func (c *ConfigWrapper) GetShowList() map[int]string {
+	config := c.Lock()
+	defer c.Unlock()
+
+	shows := make(map[int]string)
+	for _, show := range config.Shows {
+		shows[show.Id] = show.Name
+	}
+
+	return shows
+}
+
+func (c *ConfigWrapper) GetCurrentShow() (*Show, bool) {
+	show, ok := c.Config.Shows[c.Config.CurrentShow]
+	return show, ok
+}
+
+func (c *ConfigWrapper) SetCurrentShow(id int) {
+	c.Config.CurrentShow = id
+}
+
+func (c *ConfigWrapper) SetCurrentScene(id int) {
+	show, ok := c.GetCurrentShow()
+	if !ok {
+		return
+	}
+	show.CurrentScene = id
+	log.Println(id)
+}
+
+func (c *ConfigWrapper) CreateShow(name string) *Show {
+	id := c.Config.NextShowId
+	c.Config.NextShowId++
+
+	show := &Show{
+		Id:           id,
+		Name:         name,
+		Scenes:       make([]*ShowScene, 0),
+		CurrentScene: -1,
+	}
+
+	c.Config.Shows[id] = show
+
+	return show
+}
+
+func (c *ConfigWrapper) RemoveShow(id int) {
+	delete(c.Config.Shows, id)
+}
+
+func (c *ConfigWrapper) CreateScene(name string, movement int, measure int, sceneId int) *ShowScene {
+	id := c.Config.NextSceneId
+	c.Config.NextSceneId++
+
+	scene := &ShowScene{
+		Id:       id,
+		Name:     name,
+		Movement: movement,
+		Measure:  measure,
+		X32Scene: sceneId,
+	}
+
+	show, ok := c.GetCurrentShow()
+	if !ok {
+		return nil
+	}
+	show.Scenes = append(show.Scenes, scene)
+
+	return scene
+}
+
+func (c *ConfigWrapper) GetSceneById(id int) (*ShowScene, int) {
+	show, ok := c.GetCurrentShow()
+	if !ok {
+		return nil, 0
+	}
+
+	scenes := show.Scenes
+	var (
+		scene *ShowScene
+		index int
+	)
+	for i, s := range scenes {
+		if s.Id == id {
+			scene = s
+			index = i
+			break
+		}
+	}
+	return scene, index
+}
+
+func (c *ConfigWrapper) MoveScene(id int, newIndex int) {
+	show, ok := c.GetCurrentShow()
+	if !ok {
+		return
+	}
+	scenes := show.Scenes
+	scene, index := c.GetSceneById(id)
+	if index == newIndex {
+		return
+	} else if index < newIndex {
+		copy(scenes[index:newIndex], scenes[index+1:newIndex+1])
+	} else {
+		copy(scenes[newIndex+1:index+1], scenes[newIndex:index])
+	}
+	scenes[newIndex] = scene
+}
+
+func (c *ConfigWrapper) RemoveScene(id int) {
+	show, ok := c.GetCurrentShow()
+	if !ok {
+		return
+	}
+	show.Scenes = slices.DeleteFunc(show.Scenes, func(scene *ShowScene) bool { return scene.Id == id })
 }

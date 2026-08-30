@@ -3,11 +3,10 @@ import "./App.css";
 import Header from "./components/header";
 import type { PageType } from "./types";
 import useSearchParams from "./hooks/useSearchParams";
-import Mixer from "./components/pages/mixer";
-import Scenes from "./components/pages/scenes";
-import Performance from "./components/pages/performance";
-import Samples from "./components/pages/samples";
-import Page from "./components/page";
+import Mixer from "./pages/mixer";
+import Scenes from "./pages/shows";
+import Performance from "./pages/performance";
+import Samples from "./pages/samples";
 import { SocketProvider } from "./providers/SocketProvider";
 import { X32SProvider } from "./providers/X32Provider";
 
@@ -16,22 +15,22 @@ export default function App() {
     {
       id: "mixer",
       name: "Mixer",
-      page: <Mixer />,
+      page: Mixer,
     },
     {
-      id: "scenes",
-      name: "Scenes",
-      page: <Scenes />,
+      id: "shows",
+      name: "Shows",
+      page: Scenes,
     },
     {
       id: "performance",
       name: "Performance",
-      page: <Performance />,
+      page: Performance,
     },
     {
       id: "samples",
       name: "Samples",
-      page: <Samples />,
+      page: Samples,
     },
   ];
 
@@ -63,11 +62,12 @@ export default function App() {
   return (
     <AppProviders>
       <Header pages={pages} currentPage={page} setPage={navigatePage} />
-      {pages.map((p) => (
+      <page.page />
+      {/* {pages.map((p) => (
         <Page hidden={p !== page} key={p.id}>
-          {p.page}
+          <p.page />
         </Page>
-      ))}
+      ))} */}
     </AppProviders>
   );
 }

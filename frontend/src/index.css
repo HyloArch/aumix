@@ -2,16 +2,19 @@
   --white: #fff;
   --black: #000;
   --primary-light: #aaa;
-  --background-dark: #322d2a;
+  --primary-dark: #333;
+  --background-dark: #262320;
   --background-dark-transparent: #322d2a99;
-  --background-medium-dark: #403a35;
-  --background-medium: #514b49;
+  --background-medium-dark: #3b3531;
+  --background-medium: #494341;
   --background-medium-light: #58514f;
   --background-light: #686461;
 
   --green-status: #50d72e;
   --blue-status: #2e64d7;
   --red-status: #d72e2e;
+
+  --gold: #e8b20f;
 
   /* --text: #6b6375;
   --text-h: #08060d;
@@ -67,7 +70,8 @@
   height: 100%;
 }
 
-html, body {
+html,
+body {
   overflow: hidden;
   height: 100%;
   width: 100%;
@@ -75,7 +79,8 @@ html, body {
   padding: 0;
   margin: 0;
   background-color: var(--background-dark);
-  color: var(--white)
+  color: var(--white);
+  font-family: sans-serif;
 }
 
 input[type="text"],
@@ -97,6 +102,10 @@ button {
   background-color: var(--background-light);
   color: var(--white);
   padding: 0.25rem 1.5rem;
+
+  &:disabled {
+    color: var(--primary-light);
+  }
 }
 
 .status {
@@ -110,4 +119,19 @@ button {
 
 .status.connected {
   color: var(--green-status);
+}
+
+.popup-header {
+  display: flex;
+  justify-content: center;
+  font-size: 1.5rem;
+  background-color: var(--background-medium);
+  padding: 0.5rem;
+}
+
+.popup-content {
+  padding: 0.5rem 1.5rem;
+  font-size: 1.25rem;
+  display: flex;
+  flex-direction: column;
 }

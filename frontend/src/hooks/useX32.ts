@@ -1,8 +1,11 @@
 import { createContext, useContext, useEffect } from "react";
+import type { Show } from "../types";
 
 type UseX32Context = {
   isConnected: boolean;
   meterHandlers: Map<string, Set<(level: number) => void>>;
+  show?: Show;
+  currentScene?: number;
 };
 
 export const X32Context = createContext<UseX32Context | undefined>(undefined);

@@ -63,8 +63,8 @@ export function SocketProvider({ children }: PropsWithChildren) {
       return;
     }
 
-    // const host = window.location.host;
-    const host = "localhost:8080";
+    const host = window.location.host;
+    // const host = "localhost:8080";
     socketRef.current = new WebSocket(`ws://${host}/ws`);
     socketRef.current.onopen = onConnect;
     socketRef.current.onmessage = onMessage;

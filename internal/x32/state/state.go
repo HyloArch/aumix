@@ -212,9 +212,3 @@ type X32State struct {
 	F_usb    X32StateUSB
 	F_stat   X32StateStat
 }
-
-type Config struct {
-	MixerIp   string
-	MixerPort int
-	State     X32State
-}

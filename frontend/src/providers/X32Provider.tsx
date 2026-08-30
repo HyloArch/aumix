@@ -1,22 +1,38 @@
 import { useState, type PropsWithChildren } from "react";
-import { useSocketOnDisconnect, useSocketOnMessage } from "../hooks/useSocket";
+import {
+  useSocket,
+  useSocketOnConnect,
+  useSocketOnDisconnect,
+  useSocketOnMessage,
+} from "../hooks/useSocket";
 import { getHandlerKey, X32Context } from "../hooks/useX32";
-import type { Message } from "../types";
+import type { Message, Show } from "../types";
 
 export function X32SProvider({ children }: PropsWithChildren) {
+  const { send } = useSocket();
+
   const [isConnected, setIsConnected] = useState(false);
   const [meterHandlers] = useState<Map<string, Set<(level: number) => void>>>(
     new Map(),
   );
+  const [show, setShow] = useState<Show>();
+  const [currentScene, setCurrentScene] = useState<number>();
+
+  useSocketOnConnect(() => {
+    send({
+      op: "GET",
+      key: "show",
+    });
+  });
+
+  useSocketOnDisconnect(() => {
+    setIsConnected(false);
+  });
 
   useSocketOnMessage("status", (message: Message) => {
     if (message.op === "SET") {
       setIsConnected(Boolean(message.value));
     }
-  });
-
-  useSocketOnDisconnect(() => {
-    setIsConnected(false);
   });
 
   useSocketOnMessage("meters", (message: Message) => {
@@ -40,7 +56,25 @@ export function X32SProvider({ children }: PropsWithChildren) {
     });
   });
 
+  useSocketOnMessage("show", (message: Message) => {
+    if (message.op == "SET") {
+      const newShow = message.value as Show;
+      if (show?.id != newShow.id) {
+        setCurrentScene(undefined);
+      }
+      setShow(newShow);
+    }
+  });
+
+  useSocketOnMessage("go-scene", (message: Message) => {
+    if (message.op == "SET") {
+      setCurrentScene(message.value);
+    }
+  });
+
   return (
-    <X32Context value={{ isConnected, meterHandlers }}>{children}</X32Context>
+    <X32Context value={{ isConnected, meterHandlers, show, currentScene }}>
+      {children}
+    </X32Context>
   );
 }
