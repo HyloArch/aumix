@@ -4,6 +4,7 @@ import (
 	"aumix/internal/audio"
 	"aumix/internal/osc"
 	"aumix/internal/webserver"
+	"aumix/internal/x32/state"
 	"fmt"
 	"log"
 )
@@ -202,6 +203,18 @@ func scene(manager *Manager, message webserver.Message) {
 			sceneId, ok := value["sceneId"].(float64)
 			if ok {
 				scene.X32Scene = int(sceneId)
+			}
+
+			samples, ok := value["samples"].([]any)
+			if ok {
+				scene.Samples = make([]state.Sample, len(samples))
+				for index, sample := range samples {
+					s := sample.(map[string]any)
+					scene.Samples[index] = state.Sample{
+						Name: s["name"].(string),
+						File: s["file"].(string),
+					}
+				}
 			}
 		} else {
 			name := value["name"].(string)

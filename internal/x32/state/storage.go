@@ -4,7 +4,6 @@ import (
 	"aumix/internal/osc"
 	"encoding/gob"
 	"fmt"
-	"log"
 	"os"
 	"reflect"
 	"slices"
@@ -13,12 +12,18 @@ import (
 	"sync"
 )
 
+type Sample struct {
+	Name string `json:"name"`
+	File string `json:"file"`
+}
+
 type ShowScene struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
-	Movement int    `json:"movement"`
-	Measure  int    `json:"measure"`
-	X32Scene int    `json:"sceneId"`
+	Id       int      `json:"id"`
+	Name     string   `json:"name"`
+	Movement int      `json:"movement"`
+	Measure  int      `json:"measure"`
+	X32Scene int      `json:"sceneId"`
+	Samples  []Sample `json:"samples"`
 }
 
 type Show struct {
@@ -271,7 +276,6 @@ func (c *ConfigWrapper) SetCurrentScene(id int) {
 		return
 	}
 	show.CurrentScene = id
-	log.Println(id)
 }
 
 func (c *ConfigWrapper) CreateShow(name string) *Show {

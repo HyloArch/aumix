@@ -178,7 +178,7 @@ function ShowSceneList({ editScene }: ShowSceneListProps) {
             <span>{scene.movement}</span>
             <span>{scene.measure}</span>
             <span>{scene.sceneId}</span>
-            <span>{scene.samples?.length}</span>
+            <span>{scene.samples?.length || 0}</span>
           </div>
         ))}
       </div>

@@ -57,6 +57,8 @@ export default function Performance() {
           <>
             <div className="show-name">{show?.name}</div>
             <div className="scene-name">{scene?.name}</div>
+            <div className="scene-movement">Movement {scene?.movement}</div>
+            <div className="scene-measure">Measure {scene?.measure}</div>
           </>
         ) : (
           <div className="no-show">No Show Selected</div>
@@ -65,7 +67,7 @@ export default function Performance() {
       <div className="scene-actions">
         <button
           className="scene-button"
-          onClick={prevScene}
+          onTouchStart={prevScene}
           disabled={prevSceneIndex === undefined}
         >
           <span className="label">Previous</span>
@@ -76,12 +78,9 @@ export default function Performance() {
         <button className="scene-button">
           <span className="label">Play</span>
         </button>
-        <button className="scene-button">
-          <span className="label">Stop</span>
-        </button>
         <button
           className="scene-button"
-          onClick={nextScene}
+          onTouchStart={nextScene}
           disabled={nextSceneIndex === undefined}
         >
           <span className="label">Next</span>

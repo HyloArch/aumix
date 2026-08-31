@@ -1,9 +1,19 @@
 .edit-scene-modal {
-  .popup-content div {
-    height: 2.5rem;
+  .popup-content {
+    padding: 0;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+  }
+
+  .scene-info {
+    padding: 0.5rem 1.5rem;
+
+    div {
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
   }
 
   .action-buttons {
@@ -15,5 +25,45 @@
 
   .info-row :first-child {
     width: 10rem;
+  }
+
+  .scene-samples {
+    width: 48rem;
+    height: 16rem;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-dark);
+  }
+
+  .sample-list-header {
+    border-top: solid 2px var(--background-dark);
+    padding: 0.5rem;
+    background-color: var(--background-medium);
+  }
+
+  .sample {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    background-color: var(--background-medium-dark);
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+      flex: 1;
+    }
+  }
+
+  .upload:disabled {
+    --upload-percent: 0;
+    background: linear-gradient(
+        to right,
+        var(--green-status) calc(var(--upload-percent) * 100%),
+        var(--background-dark) calc(var(--upload-percent) * 100%)
+      )
+      no-repeat;
   }
 }

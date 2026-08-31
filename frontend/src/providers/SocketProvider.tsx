@@ -7,6 +7,7 @@ import {
 } from "react";
 import { SocketContext } from "../hooks/useSocket";
 import type { Message } from "../types";
+import { HOST } from "../constants";
 
 const MAX_REFRESHES = 10;
 
@@ -63,9 +64,7 @@ export function SocketProvider({ children }: PropsWithChildren) {
       return;
     }
 
-    const host = window.location.host;
-    // const host = "localhost:8080";
-    socketRef.current = new WebSocket(`ws://${host}/ws`);
+    socketRef.current = new WebSocket(`ws://${HOST}/ws`);
     socketRef.current.onopen = onConnect;
     socketRef.current.onmessage = onMessage;
     socketRef.current.onclose = onDisconnect;

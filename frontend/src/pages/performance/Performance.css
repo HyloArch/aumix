@@ -13,14 +13,17 @@
     color: var(--primary-light);
   }
 
+  .show-info > * {
+    font-size: 1.5rem;
+    padding: 1rem 0;
+  }
+
   .show-name {
     font-size: 4rem;
-    padding: 1rem 0;
   }
 
   .scene-name {
     font-size: 3rem;
-    padding: 1rem 0;
   }
 
   .scene-actions {
@@ -45,14 +48,6 @@
     &:disabled {
       color: var(--primary-light);
       background-color: var(--background-dark);
-    }
-
-    &:first-child {
-      flex: 2;
-    }
-
-    &:last-child {
-      flex: 2;
     }
 
     span {
