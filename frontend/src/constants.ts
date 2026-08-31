@@ -1,7 +1,7 @@
 import type { MeterMapping } from "./types";
 
-// export const HOST = window.location.host
-export const HOST = "localhost:8080";
+export const HOST = window.location.host;
+// export const HOST = "localhost:8080";
 
 export const MeterMappings: { [s: string]: MeterMapping } = {
   Ch1: {

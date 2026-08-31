@@ -95,7 +95,11 @@ func show(manager *Manager, message webserver.Message) {
 		manager.ConfigWrapper.Lock()
 		defer manager.ConfigWrapper.Unlock()
 
-		show, _ := manager.ConfigWrapper.GetCurrentShow()
+		show, ok := manager.ConfigWrapper.GetCurrentShow()
+		if !ok {
+			return
+		}
+
 		message.Sender.Send(webserver.Message{
 			Op:    webserver.MessageOpSET,
 			Key:   "show",
